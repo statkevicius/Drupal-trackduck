@@ -1,0 +1,7 @@
+name = Trackduck
+description = Trackduck integration
+version = "7.x-0.1"
+core = "7.x"
+
+
+

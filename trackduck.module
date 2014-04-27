@@ -1,0 +1,57 @@
+<?php
+
+/**
+ * Implements hook_help().
+ */
+/*function trackduck_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#trackduck':
+  }
+}*/
+
+function trackduck_js_alter(&$js) {
+  $trackduck_id = variable_get('trackduck_id');
+  $trackduck_active = variable_get('trackduck_active');
+  if (!path_is_admin(current_path()) && !empty($trackduck_id) && !empty($trackduck_active)) {
+    _trackduck_add_script($trackduck_id);
+  }
+
+}
+
+function _trackduck_add_script($trackduck_id) {
+  $script = array(
+    '#type' => 'markup',
+    '#markup' => '<script src="//tdcdn.blob.core.windows.net/toolbar/assets/prod/td.js" data-trackduck-id="'.$trackduck_id.'" async=""></script>' . "\r",
+    '#weight' => 1000,
+  );
+  drupal_add_html_head($script, 'trackduck');
+}
+
+/**
+ * Implements hook_permission().
+ */
+function trackduck_permission() {
+  return array(
+    'administer trackduck' => array(
+      'title' => t('Administer trackduck'),
+      'description' => t('Allows a user to configure TrackDuck settings'),
+    ),
+  );
+}
+
+
+/**
+ * Implements hook_menu().
+ */
+function trackduck_menu() {
+  $items['admin/config/development/trackduck'] = array(
+    'title' => 'Trackduck settings',
+    'description' => 'Configure Trackduck integration',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('trackduck_configuration_form'),
+    'access arguments' => array('administer trackduck'),
+    'weight' => 10,
+    'file' => 'trackduck.admin.inc',
+  );
+  return $items;
+}

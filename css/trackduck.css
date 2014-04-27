@@ -1,0 +1,14 @@
+#trackduck-configuration-form #trackduck-chrome span, #trackduck-configuration-form #trackduck-firefox span {
+    display: block;
+    text-align: center;
+}
+#trackduck-configuration-form #trackduck-chrome, #trackduck-configuration-form #trackduck-firefox {
+    display: inline-block;
+    padding: 10px;
+}
+#trackduck-configuration-form .extensions, #trackduck-configuration-form .buttons {
+    padding-top: 10px;
+}
+#trackduck-configuration-form #edit-submit {
+    display: none;
+}
