@@ -6,21 +6,35 @@
 
             TrackDuck.createCORSRequest = function(url) {
                 var xhr;
-                $.ajax({
-                    url: url,
-                    dataType: 'json',
-                    type: 'GET',
-                    /*beforeSend: function(xhr){
-                        xhr.withCredentials = true
-                    },*/
-                    xhrFields: { withCredentials: true },
-                    async: false,
-                    crossDomain: true,
-                    complete: function(request, statusText){
-                        //console.log(xhr);
-                        xhr = request;
-                    }
-                });
+                var jqVersion = parseFloat($.fn.jquery);
+                if (jqVersion >= 1.5) {
+                    $.ajax({
+                        url: url,
+                        dataType: 'json',
+                        type: 'GET',
+                        xhrFields: { withCredentials: true },
+                        async: false,
+                        crossDomain: true,
+                        complete: function(request, statusText){
+                            xhr = request;
+                        }
+                    });
+                } else {
+                    $.ajax({
+                        url: url,
+                        dataType: 'json',
+                        type: 'GET',
+                        beforeSend: function(xhr){
+                            xhr.withCredentials = true
+                        },
+                        async: false,
+                        crossDomain: true,
+                        complete: function(request, statusText){
+                            xhr = request;
+                        }
+                    });
+                }
+
                 return xhr;
             };
 
@@ -51,7 +65,7 @@
                     //console.log(xhr.status);
 
                     $('#td-enable-container').show();
-                    $(document).on('click', "#trackduck-enable", function(e){
+                    $("#trackduck-enable").click(function(e){
                         TrackDuck.getSettings(Drupal.settings.trackduckSettings.projectUrl, $(this).attr("href"));
                         //console.log(TrackDuck.xhr);
                         if (TrackDuck.xhr.status=="403") {
@@ -80,7 +94,7 @@
             } else if (!$('#trackduck_active').val()){
                 if ($('#td-enable-container').is(':hidden')) {
                     $('#td-enable-container').show();
-                    $(document).on('click', "#trackduck-enable", function(e){
+                    $("#trackduck-enable").click(function(e){
                         TrackDuck.getSettings(Drupal.settings.trackduckSettings.projectUrl, $(this).attr("href"));
                         //console.log(TrackDuck.xhr);
                         if (TrackDuck.xhr.status=="403") {
