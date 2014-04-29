@@ -1,0 +1,9 @@
+<?php
+
+/**
+* Implements hook_uninstall().
+*/
+function trackduck_uninstall() {
+  variable_del('trackduck_id');
+  variable_del('trackduck_active');
+}

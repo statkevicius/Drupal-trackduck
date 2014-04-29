@@ -1,14 +1,51 @@
-#trackduck-configuration-form #trackduck-chrome span, #trackduck-configuration-form #trackduck-firefox span {
+#trackduck-configuration-form #trackduck-chrome span,
+#trackduck-configuration-form #trackduck-firefox span {
     display: block;
     text-align: center;
 }
-#trackduck-configuration-form #trackduck-chrome, #trackduck-configuration-form #trackduck-firefox {
+#trackduck-configuration-form #trackduck-chrome,
+#trackduck-configuration-form #trackduck-firefox {
     display: inline-block;
     padding: 10px;
 }
-#trackduck-configuration-form .extensions, #trackduck-configuration-form .buttons {
+#trackduck-configuration-form .extensions,
+#trackduck-configuration-form .buttons {
     padding-top: 10px;
 }
 #trackduck-configuration-form #edit-submit {
     display: none;
+}
+#trackduck-configuration-form #trackduck-google,
+#trackduck-configuration-form #trackduck-facebook,
+#trackduck-configuration-form #trackduck-enable,
+#trackduck-configuration-form #trackduck-disable,
+#trackduck-configuration-form #trackduck-options {
+    background: none;
+    color: #fff;
+    border: 0;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    line-height: 40px;
+    height: 40px;
+    padding: 0px 30px;
+    font-size: 14px;
+    display: inline-block;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    margin-bottom: 0;
+}
+#trackduck-configuration-form #trackduck-google {
+    margin-right:10px;
+    background-color:#f25f58;
+}
+#trackduck-configuration-form #trackduck-facebook{
+    margin-right:30px; 
+    background-color:#3565b0;
+}
+#trackduck-configuration-form #trackduck-options{
+    margin-left:30px;
+    background-color:#1e8cbe;
+}
+#trackduck-configuration-form #trackduck-enable, #trackduck-configuration-form #trackduck-disable {
+    background-color: #1e8cbe;
 }

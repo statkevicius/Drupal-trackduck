@@ -26,7 +26,7 @@ function trackduck_configuration_form() {
 
   $form['main']['description'] = array(
     '#prefix' => '<h2>Main Settings</h2>',
-    '#markup' => 'TrackDuck - visual feedback and bug tracking solution for web. After enabling TrackDuck plugin, you will be able to add comments with screenshots directly from your Drupal website, and receive detailed feedback from your customers. You can also receive error reports from users. Take control of feedback and communication with clients, sign up for track duck for free. Learn more on TrackDuck website.',
+    '#markup' => t('TrackDuck - visual feedback and bug tracking solution for web. After enabling TrackDuck plugin, you will be able to add comments with screenshots directly from your Drupal website, and receive detailed feedback from your customers. You can also receive error reports from users. Take control of feedback and communication with clients, sign up for track duck for free. Learn more on <a href="http://trackuck.com" title="Visit TrackDuck" target="_blank">TrackDuck website</a>.'),
   );
 
   $form['login'] = array(
@@ -40,8 +40,8 @@ function trackduck_configuration_form() {
   );
 
   $form['login']['buttons'] = array(
-    '#markup' => '<p><a href="https://app.trackduck.com/auth/google?redirect=' . $GLOBALS['base_url'] . '/' . current_path() . '" class="button" id="trackduck_google">' . t('Google signup') . '</a>
-      <a href="https://app.trackduck.com/auth/Facebook?redirect=' . $GLOBALS['base_url'] . '/' . current_path() . '" class="button" id="trackduck_facebook">' . t('Login with Facebook') . '</a></p><p>
+    '#markup' => '<p><a href="https://app.trackduck.com/auth/google?redirect=' . $GLOBALS['base_url'] . '/' . current_path() . '" id="trackduck-google">' . t('Google signup') . '</a>
+      <a href="https://app.trackduck.com/auth/Facebook?redirect=' . $GLOBALS['base_url'] . '/' . current_path() . '" id="trackduck-facebook">' . t('Login with Facebook') . '</a></p><p>
       <a href="https://app.trackduck.com/auth/login?redirect=' . $GLOBALS['base_url'] . '/' . current_path() . '">' . t('Login or register with email') . '</a></p>',
   );
 
@@ -56,7 +56,7 @@ function trackduck_configuration_form() {
   );
 
   $form['enable']['buttons'] = array(
-    '#markup' => '<p><a href="https://app.trackduck.com/#/project/new/step1?url=' . $GLOBALS['base_url'] . '" target="_blank" id="trackduck-enable" class="button button-primary">' . t('Enable integration') . '</a></p>',
+    '#markup' => '<p><a href="https://app.trackduck.com/#/project/new/step1?url=' . $GLOBALS['base_url'] . '" target="_blank" id="trackduck-enable">' . t('Enable integration') . '</a></p>',
   );
 
   $form['disable'] = array(
@@ -70,8 +70,8 @@ function trackduck_configuration_form() {
   );
 
   $form['disable']['buttons'] = array(
-    '#markup' => '<a href="#" id="trackduck-disable" class="button button-primary">' . t('Disable integration') . '</a>
-      <a href="https://app.trackduck.com/#/project/' . variable_get('trackduck_id', false) . '/settings" target="_blank" class="button button-primary">' . t('Open project settings') . '</a>',
+    '#markup' => '<a href="#" id="trackduck-disable">' . t('Disable integration') . '</a>
+      <a href="https://app.trackduck.com/#/project/' . variable_get('trackduck_id', false) . '/settings" id="trackduck-options" target="_blank">' . t('Open project settings') . '</a>',
     '#prefix' => '<div class="buttons">',
     '#suffix' => '</div>',
   );
