@@ -11,7 +11,7 @@ function trackduck_configuration_form() {
   );
 
   $form['#attached']['js'][] = array(
-    'data' => array('trackduckSettings' => array('projectUrl' => $GLOBALS['base_url'])),
+    'data' => array('trackduckSettings' => array('url' => $GLOBALS['base_url'], 'status' => variable_get('trackduck_status', TRACKDUCK_LOGGED_OUT), 'id' => variable_get('trackduck_id', null))),
     'type' => 'setting',
   );
 
@@ -86,19 +86,21 @@ function trackduck_configuration_form() {
     '#suffix' => '</div>',
   );
 
-  $form['trackduck_active'] = array(
+  $form['trackduck_status'] = array(
+    '#title' => 'Trackduck status',
     '#type' => 'hidden',
-    '#default_value' => variable_get('trackduck_active'),
+    '#default_value' => variable_get('trackduck_status', TRACKDUCK_LOGGED_OUT),
     '#attributes' => array(
-      'id' => 'trackduck_active'
+      'id' => 'trackduck-active'
     ),
   );
 
   $form['trackduck_id'] = array(
+    '#title' => 'Trackduck ID',
     '#type' => 'hidden',
-    '#default_value' => variable_get('trackduck_id'),
+    '#default_value' => variable_get('trackduck_id', null),
     '#attributes' => array(
-      'id' => 'trackduck_id'
+      'id' => 'trackduck-id'
     ),
   );
   return system_settings_form( $form );

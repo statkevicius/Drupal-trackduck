@@ -4,129 +4,93 @@
         attach: function() {
             var TrackDuck = {};
 
-            TrackDuck.createCORSRequest = function(url) {
-                var xhr;
-                var jqVersion = parseFloat($.fn.jquery);
-                if (jqVersion >= 1.5) {
-                    $.ajax({
-                        url: url,
-                        dataType: 'json',
-                        type: 'GET',
-                        xhrFields: { withCredentials: true },
-                        async: false,
-                        crossDomain: true,
-                        complete: function(request, statusText){
-                            xhr = request;
+            TrackDuck.getStatus = function(withInterval) {
+                var trackduckSettings = Drupal.settings.trackduckSettings;
+                var url = 'https://app.trackduck.com/api/bar/settings/?url=' + encodeURIComponent(trackduckSettings.url);
+                $.ajax({
+                    url: url,
+                    dataType: 'json',
+                    type: 'GET',
+                    beforeSend: function(xhr){
+                        xhr.withCredentials = true
+                    },
+                    xhrFields : {
+                        withCredentials: true
+                    },
+                    crossDomain: true,
+                    success: function(xhr){
+                        if (withInterval == true) { //if project created, clear interval
+                            clearInterval(TrackDuck.checkStatus);
                         }
-                    });
-                } else {
-                    $.ajax({
-                        url: url,
-                        dataType: 'json',
-                        type: 'GET',
-                        beforeSend: function(xhr){
-                            xhr.withCredentials = true
-                        },
-                        async: false,
-                        crossDomain: true,
-                        complete: function(request, statusText){
-                            xhr = request;
+
+                        if (trackduckSettings.status == 3 && trackduckSettings.id == "") { //if response is positive, save settings
+                            $('#trackduck-active').val(1);
+                            $('#trackduck-id').val(xhr.projectId);
+                            $("#edit-submit").trigger("click");
+                        } else if (trackduckSettings.status == 1 && trackduckSettings.id != "") { //show disable container if integration enabled
+                            $('#td-disable-container').show();
+                            navigator.sayswho = (function(){
+                                var ua= navigator.userAgent,
+                                    N= navigator.appName, tem,
+                                    M= ua.match(/(opera|chrome|safari|firefox|msie|trident)\/?\s*([\d\.]+)/i) || [];
+                                M= M[2]? [M[1], M[2]]:[N, navigator.appVersion, '-?'];
+                                return M[0];
+                            })();
+                            if (navigator.sayswho=="Chrome"){
+                                $('#trackduck-firefox').hide();
+                            }
+                            if (navigator.sayswho=="Firefox"){
+                                $('#trackduck-chrome').hide();
+                            }
+                        } else if (trackduckSettings.status == 2 && trackduckSettings.id != "") { //show enable container if integration disabled
+                            $('#td-enable-container').show();
                         }
-                    });
-                }
 
-                return xhr;
-            };
+                        if (trackduckSettings.id != xhr.projectId) { //if project id differs, set the new one
+                            $('#trackduck-id').val(xhr.projectId);
+                            $("#edit-submit").trigger("click");
+                        }
 
-            TrackDuck.getSettings = function (my_href, redirect){
-                var url = 'https://app.trackduck.com/api/bar/settings/?url=' + encodeURIComponent(my_href);
-                var xhr = TrackDuck.createCORSRequest(url);
-                //console.log(xhr);
-                TrackDuck.xhr = xhr;
+                    },
+                    error: function(xhr) {
+                        if (xhr.status == 401) { //if not logged in
+                            $('#td-login-container').show();
+                        }
+                        else if (xhr.status == 403) { //if logged in
+                            if (trackduckSettings.status == 4) { //submit settings after logging in
+                                $('#trackduck-active').val(3);
+                                $("#edit-submit").trigger("click");
+                            } else if (trackduckSettings.status == 3 && trackduckSettings.id == "") { //if logged in but there is no project created
+                                $('#td-enable-container').show();
+                            } else { //if logged in but project is deleted or trying to access other account's project
+                                $('#trackduck-active').val(3);
+                                $('#trackduck-id').val("");
+                                $("#edit-submit").trigger("click");
+                            }
 
-                if (xhr === null) {
-                    alert('Please, update your browser. Currently we support all modern browsers and IE 10+','trackduck');
-                    return false;
-                }
-
-                //console.log(xhr);
-                
-                // Response handlers.
-                if (xhr.status === 200) {
-                    if (!$('#trackduck_active').val()){
-                        var resp = JSON.parse(xhr.responseText);
-                        $('#trackduck_id').val(resp.projectId);
-                        $('#trackduck_active').val(1);
-                        $("#edit-submit").trigger("click");
+                        }
                     }
-                    //console.log(xhr.status);
-                }
-                else if(xhr.status === 403){
-                    //console.log(xhr.status);
-
-                    $('#td-enable-container').show();
-                    $("#trackduck-enable").click(function(e){
-                        TrackDuck.getSettings(Drupal.settings.trackduckSettings.projectUrl, $(this).attr("href"));
-                        //console.log(TrackDuck.xhr);
-                        if (TrackDuck.xhr.status=="403") {
-                            // go to TrackDuck
-                        } else {
-                            e.preventDefault();
-                        }
-                    });
-                }
-                else if(xhr.status === 401){
-                    $('#td-login-container').show();
-                    $('#td-enable-container').hide();
-                }
-                else {
-                    console.log(xhr);
-                    console.log('TD API Exception status:'+ xhr.status, {responseText: xhr.responseText});
-                }
-                return xhr.status;
-
+                });
             };
 
+            TrackDuck.getStatus(false);
 
-            if (!$('#trackduck_id').val()){
-                //console.log($('#trackduck_id').val())
-                TrackDuck.getSettings(Drupal.settings.trackduckSettings.projectUrl);
-            } else if (!$('#trackduck_active').val()){
-                if ($('#td-enable-container').is(':hidden')) {
-                    $('#td-enable-container').show();
-                    $("#trackduck-enable").click(function(e){
-                        TrackDuck.getSettings(Drupal.settings.trackduckSettings.projectUrl, $(this).attr("href"));
-                        //console.log(TrackDuck.xhr);
-                        if (TrackDuck.xhr.status=="403") {
-                            // go to TrackDuck
-                        } else {
-                            e.preventDefault();
-                        }
-                    });
-                }
-            } else {
-                console.log($('#trackduck_id').val());
-                $('#td-disable-container').show();
-                $('#trackduck-disable').click(function(){
-                    $('#trackduck_active').val('');
+            $("#trackduck-enable").click(function(e){
+                var trackduckSettings = Drupal.settings.trackduckSettings;
+                if (trackduckSettings.status == 2 && trackduckSettings.id != "") { //if disabled and has id, enable
+                    $('#trackduck-active').val(1);
                     $("#edit-submit").trigger("click");
-                });
-            }
+                    e.preventDefault();
+                } else if (trackduckSettings.status == 3 && trackduckSettings.id == ""){ //if has no id, set interval and wait for id
+                    TrackDuck.checkStatus = setInterval(function(){TrackDuck.getStatus(true)},5000);
+                }
+            });
 
-            $(document).ready(function(){
-                if ($('#trackduck_id').val() && $('#trackduck_active').val()) {
-                navigator.sayswho= (function(){
-                    var ua= navigator.userAgent,
-                        N= navigator.appName, tem,
-                        M= ua.match(/(opera|chrome|safari|firefox|msie|trident)\/?\s*([\d\.]+)/i) || [];
-                    M= M[2]? [M[1], M[2]]:[N, navigator.appVersion, '-?'];
-                    return M[0];
-                })();
-                if(navigator.sayswho=="Chrome"){$('#trackduck-firefox').hide();}
-                    if(navigator.sayswho=="Firefox"){
-                        $('#trackduck-chrome').hide();}
-                    }
-                });
+            $('#trackduck-disable').click(function(e){
+                $('#trackduck-active').val(2);
+                $("#edit-submit").trigger("click");
+                e.preventDefault();
+            });
         }
     }
 })(jQuery);

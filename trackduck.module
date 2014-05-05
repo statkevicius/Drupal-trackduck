@@ -1,12 +1,17 @@
 <?php
 
+define('TRACKDUCK_ACTIVE', 1);
+define('TRACKDUCK_DISABLED', 2);
+define('TRACKDUCK_NO_PROJECT', 3);
+define('TRACKDUCK_LOGGED_OUT', 4);
+
 /**
  * Implements hook_js_alter().
  */
 function trackduck_js_alter(&$js) {
   $trackduck_id = variable_get('trackduck_id');
-  $trackduck_active = variable_get('trackduck_active');
-  if (!path_is_admin(current_path()) && !empty($trackduck_id) && !empty($trackduck_active)) {
+  $trackduck_status = variable_get('trackduck_status');
+  if (!path_is_admin(current_path()) && !empty($trackduck_id) && !empty($trackduck_status) && $trackduck_status == TRACKDUCK_ACTIVE) {
     _trackduck_add_script($trackduck_id);
   }
 
